@@ -6,21 +6,29 @@ export const ToDoForm = ({ handleWriteInfo, handleSubmitInfo }) => {
       onSubmit={handleSubmitInfo}
       className="flex flex-col justify-center items-center"
     >
-      <input
-        type="text"
-        name="title"
-        onChange={handleWriteInfo}
-        className="w-[50%] bg-white mb-5"
-      />
-      <input
-        type="textaria"
-        name="body"
-        onChange={handleWriteInfo}
-        className="w-[50%] bg-white h-20 mb-5"
-      />
-      <button className="px-3 py-2 border border-neutral-700 rounded-xl cursor-pointer">
-        Создать
-      </button>
+      <label className="w-[50%] flex flex-col text-start">
+        <span className="mb-1 text-neutral-600">Task title</span>
+        <input
+          type="text"
+          name="title"
+          onChange={handleWriteInfo}
+          className="w-[100%] bg-white mb-5 h-10 px-2 placeholder:text-neutral-500 border-none rounded-lg shadow-md"
+          placeholder="Task title..."
+          required
+        />
+      </label>
+      <label className="w-[50%] flex flex-col text-start">
+        <span className="mb-1 text-neutral-600">Task body</span>
+        <textarea
+          name="body"
+          onChange={handleWriteInfo}
+          className="w-[100%] bg-white mb-5 p-2 h-25 resize-none placeholder:text-neutral-500 shadow-md rounded-lg"
+          placeholder="Task body..."
+          required
+        />
+      </label>
+
+      <button className="active-btn">Create</button>
     </form>
   );
 };

@@ -12,7 +12,7 @@ export const ToDo = () => {
     title: "",
     body: "",
     details: false,
-    complited: false,
+    completed: false,
   });
   const [submitedData, setSubmitedData] = useState(localStorageTasks || []);
   const [filter, setFilter] = useState("all");
@@ -31,10 +31,13 @@ export const ToDo = () => {
     const taskObj = {
       ...task,
       id: Date.now(),
-      date: `${new Date().getDay()}.${new Date().getMonth()}.${new Date().getFullYear()}`,
+      date: `${new Date().getDate()}.${
+        new Date().getMonth() + 1
+      }.${new Date().getFullYear()}`,
     };
     setSubmitedData((prev) => [...prev, taskObj]);
     setLocalTasks([...submitedData, taskObj]);
+    e.target.reset();
   };
 
   const handleRemoveTask = (id) => {
@@ -50,16 +53,32 @@ export const ToDo = () => {
     setSubmitedData(activeDetailsTask);
     setLocalTasks(activeDetailsTask);
   };
+
+  const handleIsCompleted = (id) => {
+    const completedTask = submitedData.map((item) =>
+      item.id === id ? { ...item, completed: !item.completed } : item
+    );
+    setSubmitedData(completedTask);
+    setLocalTasks(completedTask);
+  };
+
+  const handleFilterTasks = (e) => {
+    setFilter(e.target.id);
+  };
+
   return (
-    <div className="text-center bg-neutral-500 w-[100%]  mx-auto  border-none rounded-xl pt-7 p-5 mt-9">
+    <div className="text-center w-[90%] mx-auto   pt-7 p-5 ">
       <ToDoForm
         handleWriteInfo={handleWriteInfo}
         handleSubmitInfo={handleSubmitInfo}
       />
-      <ToDoFilters />
+      <ToDoFilters handleFilterTasks={handleFilterTasks} filter={filter} />
       <ToDoList
         submitedData={submitedData}
         handleDetailsToggle={handleDetailsToggle}
+        handleIsCompleted={handleIsCompleted}
+        handleRemoveTask={handleRemoveTask}
+        filter={filter}
       />
     </div>
   );
