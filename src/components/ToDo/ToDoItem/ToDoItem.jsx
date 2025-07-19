@@ -5,8 +5,8 @@ export const ToDoItem = ({
   body,
   details,
   completed,
-  handleDetailsToggle,
-  handleIsCompleted,
+  toggleTaskDetails,
+  toggleCompletedStatus,
   handleRemoveTask,
 }) => {
   return (
@@ -19,7 +19,7 @@ export const ToDoItem = ({
         <input
           className="cursor-pointer w-5 h-5 mr-75"
           type="checkbox"
-          onChange={() => handleIsCompleted(id)}
+          onChange={() => toggleCompletedStatus(id)}
           checked={completed}
         />
         <button
@@ -30,7 +30,7 @@ export const ToDoItem = ({
           Delete
         </button>
       </div>
-      <div onClick={() => handleDetailsToggle(id)} className="text-sm w-[100%]">
+      <div onClick={() => toggleTaskDetails(id)} className="text-sm w-[100%]">
         {details ? (
           <p className="pb-3 text-neutral-600 cursor-pointer ">
             Hide details ▲

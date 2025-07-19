@@ -1,5 +1,4 @@
 export const ToDoForm = ({ handleWriteInfo, handleSubmitInfo }) => {
-  const inputStyles = "";
   return (
     <form
       action=""

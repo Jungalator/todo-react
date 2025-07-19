@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { ToDoForm } from "./ToDoForm/ToDoForm";
 import { ToDoFilters } from "./ToDoFilters/ToDoFilters";
 import { ToDoList } from "./ToDoList/ToDoList";
+import { filterTasks } from "../../helpers/filterTasks";
+import { FILTERS } from "../../constants/filters";
 
 export const ToDo = () => {
   const [localStorageTasks, setLocalTasks] = useLocalStorage("todo", "");
@@ -15,8 +17,9 @@ export const ToDo = () => {
     completed: false,
   });
   const [submitedData, setSubmitedData] = useState(localStorageTasks || []);
-  const [filter, setFilter] = useState("all");
-  const [inputValue, setInputValue] = useState(null);
+  const [filter, setFilter] = useState(FILTERS.ALL);
+
+  const visibleTasks = filterTasks(submitedData, filter);
 
   const handleWriteInfo = (e) => {
     const { name, value } = e.target;
@@ -28,6 +31,7 @@ export const ToDo = () => {
 
   const handleSubmitInfo = (e) => {
     e.preventDefault();
+
     const taskObj = {
       ...task,
       id: Date.now(),
@@ -35,8 +39,9 @@ export const ToDo = () => {
         new Date().getMonth() + 1
       }.${new Date().getFullYear()}`,
     };
-    setSubmitedData((prev) => [...prev, taskObj]);
-    setLocalTasks([...submitedData, taskObj]);
+    const newTasks = [...submitedData, taskObj];
+    setSubmitedData(newTasks);
+    setLocalTasks(newTasks);
     e.target.reset();
   };
 
@@ -46,7 +51,7 @@ export const ToDo = () => {
     setLocalTasks(filteredTasks);
   };
 
-  const handleDetailsToggle = (id) => {
+  const toggleTaskDetails = (id) => {
     const activeDetailsTask = submitedData.map((item) =>
       item.id === id ? { ...item, details: !item.details } : item
     );
@@ -54,7 +59,7 @@ export const ToDo = () => {
     setLocalTasks(activeDetailsTask);
   };
 
-  const handleIsCompleted = (id) => {
+  const toggleCompletedStatus = (id) => {
     const completedTask = submitedData.map((item) =>
       item.id === id ? { ...item, completed: !item.completed } : item
     );
@@ -62,23 +67,21 @@ export const ToDo = () => {
     setLocalTasks(completedTask);
   };
 
-  const handleFilterTasks = (e) => {
-    setFilter(e.target.id);
-  };
-
   return (
     <div className="text-center w-[90%] mx-auto   pt-7 p-5 ">
+      <h1 className="text-5xl font-bold mb-10 text-shadow-md text-neutral-700">
+        ToDo App
+      </h1>
       <ToDoForm
         handleWriteInfo={handleWriteInfo}
         handleSubmitInfo={handleSubmitInfo}
       />
-      <ToDoFilters handleFilterTasks={handleFilterTasks} filter={filter} />
+      <ToDoFilters filter={filter} setFilter={setFilter} />
       <ToDoList
-        submitedData={submitedData}
-        handleDetailsToggle={handleDetailsToggle}
-        handleIsCompleted={handleIsCompleted}
+        toggleTaskDetails={toggleTaskDetails}
+        toggleCompletedStatus={toggleCompletedStatus}
         handleRemoveTask={handleRemoveTask}
-        filter={filter}
+        visibleTasks={visibleTasks}
       />
     </div>
   );
